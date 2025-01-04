@@ -8,6 +8,7 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('@prisma/client');
 const indexRouter = require("./routes/indexRouter");
 const loginRouter = require("./routes/loginRouter");
+const signupRouter = require("./routes/signupRouter");
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(passport.session());
 
 app.use("/", indexRouter);
 app.use("/", loginRouter);
+app.use("/", signupRouter);
 
 const PORT = 8080;
 
