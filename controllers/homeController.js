@@ -9,11 +9,20 @@ async function getHome(req, res) {
                 id: userId,
             },
         })
-        console.log(userId)
+    
         res.render("home", {username: `${user.username}`});
     } else {
         res.send("You are not authenticated");
     }
 }
 
-module.exports = { getHome }
+function logOutUser (req, res) {
+    req.logout((err) => {
+        if (err) {
+            return nextDay(err)
+        } 
+        res.redirect("/log-in")
+    })
+}
+
+module.exports = { getHome, logOutUser }
