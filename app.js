@@ -43,6 +43,10 @@ app.use("/", indexRouter);
 app.use("/", loginRouter);
 app.use("/", signupRouter);
 
+app.use((err, req, res, next) => {
+  res.status(500).send(err.message);
+});
+
 const PORT = 8080;
 
 app.listen(PORT, () => {

@@ -6,6 +6,15 @@
     <title>Sign up</title>
 </head>
 <body>
+     <!-- Error messages section -->
+     <% if (locals.errors) { %>
+        <div class="error-container">
+            <% errors.forEach(function(error) { %>
+                <p class="error-message"><%= error.msg %></p>
+            <% }); %>
+        </div>
+    <% } %>
+    
     <form action="/sign-up" method="POST">
         <h1>Create Account</h1>
         
