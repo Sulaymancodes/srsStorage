@@ -6,7 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <nav></nav>
+    <nav> 
+        <button id="create-folder-btn">Create Folder</button>
+        <a href="/log-out">Logout</a>
+    </nav>
     <main>
         <h1>Welcome to HomePage  <%= username %> </h1>
     
@@ -16,7 +19,31 @@
               <input type="submit" value="Upload" class="btn btn-default">
             </div>
           </form>
-        <a href="/log-out">Logout</a>
+       
+        <dialog id="create-folder">
+            <form action="" method="post">
+                <h1>Create Folder</h1>
+                <label for="folderName">Name</label>
+                <input type="text" name="folderName" required>
+                <button type="submit">Create</button>
+            </form>
+            <button id="close-popup">close</button>
+        </dialog>
+        
     </main>
+    <script>
+        const folderDialogue = document.getElementById("create-folder");
+        const createFolderBtn = document.getElementById("create-folder-btn");
+        const closeBtn = document.getElementById("close-popup");
+
+        createFolderBtn.addEventListener("click", () => {
+            folderDialogue.showModal();
+        })
+
+        closeBtn.addEventListener("click", () => {
+            folderDialogue.close();
+        })
+    </script>
 </body>
+
 </html>
