@@ -13,22 +13,28 @@
     <main>
         <h1>Welcome to HomePage  <%= username %> </h1>
     
-        <form action="/uploadfile" enctype="multipart/form-data" method="post">
+        <dialog id="create-folder">
+            <form action="/create-folder" method="post">
+              <h1>Create Folder</h1>
+              <label for="folderName">Name</label>
+              <input type="text" name="folderName" required />
+              <button type="submit">Create</button>
+            </form>
+            <button id="close-popup">Close</button>
+          </dialog>
+          
+          <form action="/uploadfile" enctype="multipart/form-data" method="post">
             <div class="form-group">
-              <input type="file" class="form-control-file" name="uploaded_file" required>
-              <input type="submit" value="Upload" class="btn btn-default">
+                <% folders.forEach(folder => { %>
+                  <div>
+                    <p><%= folder.name %></p>
+                  </div>
+                <% }) %>
+              <input type="file" name="uploaded_file" required />
+              <input type="submit" value="Upload" />
             </div>
           </form>
-       
-        <dialog id="create-folder">
-            <form action="" method="post">
-                <h1>Create Folder</h1>
-                <label for="folderName">Name</label>
-                <input type="text" name="folderName" required>
-                <button type="submit">Create</button>
-            </form>
-            <button id="close-popup">close</button>
-        </dialog>
+          
         
     </main>
     <script>
