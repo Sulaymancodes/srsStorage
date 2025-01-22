@@ -20,6 +20,8 @@ async function getHome(req, res) {
             console.error(err);
             res.status(500).send("Error loading homepage");
         }
+    } else {
+        res.send("You are not authenticated to view this path")
     }
 }
 

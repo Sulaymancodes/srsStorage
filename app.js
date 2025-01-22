@@ -10,6 +10,7 @@ const indexRouter = require("./routes/indexRouter");
 const loginRouter = require("./routes/loginRouter");
 const signupRouter = require("./routes/signupRouter");
 const homeRouter = require("./routes/homeRouter");
+const folderRouter = require("./routes/folderRouter");
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/", indexRouter);
 app.use("/", loginRouter);
 app.use("/", signupRouter);
 app.use("/", homeRouter);
+app.use("/", folderRouter);
 
 app.use((err, req, res, next) => {
   res.status(500).send(err.message);
