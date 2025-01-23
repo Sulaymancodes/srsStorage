@@ -22,19 +22,7 @@
             </form>
             <button id="close-popup">Close</button>
           </dialog>
-          
-          <!-- <form action="/uploadfile" enctype="multipart/form-data" method="post">
-            <div class="form-group">
-              <label for="folderId">Select Folder</label>
-              <select name="folderId" required>
-                <% folders.forEach(folder => { %>
-                  <option value="<%= folder.id %>"><%= folder.name %></option>
-                <% }) %>
-              </select>
-              <input type="file" name="uploaded_file" required />
-              <input type="submit" value="Upload" />
-            </div>
-          </form> -->
+
           <h2>Folders</h2>
           <% folders.forEach(folder => { %>
             <a href="/<%= folder.id %>/folder"><%= folder.name %></a>

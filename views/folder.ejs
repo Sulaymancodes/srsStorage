@@ -8,5 +8,12 @@
 <body>
     <h1>Folder Route</h1>
     <p><%= username %> / <%= folderName %></p>
+    <form action="/uploadfile" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+          <input type="hidden" name="folderId" value="<%= folderId %>">
+          <input type="file" name="uploaded_file" required />
+          <input type="submit" value="Upload" />
+        </div>
+    </form> 
 </body>
 </html>

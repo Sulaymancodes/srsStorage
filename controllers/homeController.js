@@ -58,30 +58,13 @@ async function createFolder (req, res) {
           where: { userId: userId },
         });
         res.render("home", { username: `${user.username}`, folders });
-        
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Error creating folder");
     } 
 }
 
-async function uploadFile (req, res) {
-    const { folderId } = req.body;
-    const filePath = req.file.path;
 
-    try {
-      await prisma.file.create({
-        data: {
-          name: req.file.filename,
-          path: filePath,
-          folderId: parseInt(folderId),
-        },
-      });
-      res.status(201).send("File uploaded successfully!");
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error uploading file");
-    }
-}
 
-module.exports = { getHome, logOutUser, createFolder, uploadFile }
+module.exports = { getHome, logOutUser, createFolder }
