@@ -49,8 +49,16 @@ async function createFolder (req, res) {
         if (!fs.existsSync(folderPath)) {
             fs.mkdirSync(folderPath, { recursive: true });
         }
-
-        res.status(201).send("Folder created successfully!");
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        })
+        const folders = await prisma.folder.findMany({
+          where: { userId: userId },
+        });
+        res.render("home", { username: `${user.username}`, folders });
+        
     } catch (err) {
         console.error(err);
         res.status(500).send("Error creating folder");
