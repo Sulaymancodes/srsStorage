@@ -14,9 +14,8 @@
         <ul>
             <% files.forEach(file => { %>
                 <li>
-                    <!-- Add the download attribute to allow file downloads -->
                     <a href="/<%= file.path %>" download="<%= file.name %>"><%= file.name %></a>
-                </li>
+                </li>                
             <% }); %>
         </ul>
     <% } else { %>

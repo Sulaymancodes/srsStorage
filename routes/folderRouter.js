@@ -2,10 +2,15 @@ const { Router } = require("express");
 const folderRouter = Router();
 const folderController = require("../controllers/folderController");
 const path = require("path");
-const multer  = require('multer')
+const multer  = require('multer');
+const fs = require("fs");
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const folderPath = path.join(__dirname, "../uploads", req.body.folderId);
+
+    fs.mkdirSync(folderPath, { recursive: true });
+
     cb(null, folderPath);
   },
   filename: function (req, file, cb) {
@@ -14,7 +19,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 folderRouter.get("/:id/folder", folderController.getFolder);
 folderRouter.post('/uploadfile', upload.single('uploaded_file'), folderController.uploadFile);
