@@ -65,6 +65,42 @@ async function createFolder (req, res) {
     } 
 }
 
+async function updateFolder(req, res) {
+    const { newName } = req.body;
+    const folderId = parseInt(req.params.id);
 
+    try {
+        await prisma.folder.update({
+            where: { id: folderId },
+            data: { name: newName },
+        });
+        res.redirect("/home");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error updating folder");
+    }
+}
 
-module.exports = { getHome, logOutUser, createFolder }
+async function deleteFolder(req, res) {
+    const folderId = parseInt(req.params.id);
+
+    try {
+        // Delete folder from database
+        await prisma.folder.delete({
+            where: { id: folderId },
+        });
+
+        // Delete folder directory from filesystem
+        const folderPath = path.join(__dirname, "../uploads", String(folderId));
+        if (fs.existsSync(folderPath)) {
+            fs.rmSync(folderPath, { recursive: true, force: true });
+        }
+
+        res.redirect("/home");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error deleting folder");
+    }
+}
+
+module.exports = { getHome, logOutUser, createFolder, updateFolder, deleteFolder }

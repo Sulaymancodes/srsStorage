@@ -6,9 +6,9 @@
   <title>Folder: <%= folderName %></title>
 </head>
 <body>
-  <h1>Folder: <%= folderName %></h1>
-  <p>Username: <%= username %></p>
-
+  <h1><%= folderName %></h1>
+  <p><a href="/home"><%= username %></a> / <%= folderName %></p>
+  <button id="create-file-btn">Upload a File</button>
   <h2>Uploaded Files</h2>
   <% if (files.length > 0) { %>
     <table border="1" cellspacing="0" cellpadding="10">
@@ -39,15 +39,31 @@
     <p>No files uploaded yet.</p>
   <% } %>
 
-  <h3>Upload a New File</h3>
-  <form action="/uploadfile" enctype="multipart/form-data" method="post">
-    <div class="form-group">
-      <label for="fileName">File name:</label>
-      <input type="text" name="fileName" required>
-      <input type="hidden" name="folderId" value="<%= folderId %>">
-      <input type="file" name="uploaded_file" required />
-      <input type="submit" value="Upload" />
-    </div>
-  </form>
+  <dialog id="create-file">
+    <form action="/uploadfile" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+          <label for="fileName">File name:</label>
+          <input type="text" name="fileName" required>
+          <input type="hidden" name="folderId" value="<%= folderId %>">
+          <input type="file" name="uploaded_file" required />
+          <input type="submit" value="Upload" />
+        </div>
+      </form>
+      <button id="close-popup">Close</button>
+  </dialog>
+ 
 </body>
+<script>
+    const fileDialogue = document.getElementById("create-file");
+    const createFileBtn = document.getElementById("create-file-btn");
+    const closeBtn = document.getElementById("close-popup");
+
+    createFileBtn.addEventListener("click", () => {
+        fileDialogue.showModal();
+    })
+
+    closeBtn.addEventListener("click", () => {
+        fileDialogue.close();
+    })
+</script>
 </html>
