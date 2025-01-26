@@ -7,12 +7,11 @@
 </head>
 <body>
     <nav> 
-        <button id="create-folder-btn">Create Folder</button>
         <a href="/log-out">Logout</a>
     </nav>
     <main>
         <h1>Welcome to HomePage  <%= username %> </h1>
-    
+        <button id="create-folder-btn">Add a Folder</button>
         <dialog id="create-folder">
             <form action="/create-folder" method="post">
               <h1>Create Folder</h1>
@@ -24,10 +23,14 @@
           </dialog>
 
           <h2>Folders</h2>
-          <% folders.forEach(folder => { %>
-            <a href="/<%= folder.id %>/folder"><%= folder.name %></a>
-          <% }) %>
-        
+          <% if (folders.length > 0) { %>
+            <% folders.forEach(folder => { %>
+                <a href="/<%= folder.id %>/folder"><%= folder.name %></a>
+            <% }) %>
+        <% } else { %> 
+            <p>No folder Yet, click the button below to create a folder</p>
+            <button id="create-folder-btn">Create a Folder</button>
+        <% } %>
     </main>
     <script>
         const folderDialogue = document.getElementById("create-folder");
