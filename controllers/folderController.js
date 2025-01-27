@@ -1,3 +1,4 @@
+const cloudinary = require("../config/cloudinary");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const fs = require("fs");
@@ -44,35 +45,41 @@ async function getFolder(req, res) {
 async function uploadFile(req, res) {
   const userId = req.user.id;
   const { folderId, fileName } = req.body;
-  const filePath = `uploads/${req.body.folderId}/${req.file.filename}`;
-  const fileSize = req.file.size; // File size in bytes
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    // Upload file to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: `uploads/${folderId}`, // Organize files by folder ID
+      resource_type: "auto",         // Automatically detect file type (image, video, etc.)
     });
 
-    const folder = await prisma.folder.findUnique({
-      where: { id: Number(folderId) },
-    });
+    // Delete the temporary file from the server
+    fs.unlinkSync(req.file.path);
 
-    const folderName = folder.name;
-    const username = user.username;
-
-    // Add the new file to the database
+    // Add the file to the database
     await prisma.file.create({
       data: {
         name: fileName,
-        path: filePath,
-        size: fileSize,
+        path: result.secure_url, // Store the Cloudinary URL
+        size: result.bytes,      // File size in bytes
         folderId: parseInt(folderId),
       },
     });
 
-    // Fetch the updated file list after the new file has been added
+    // Fetch the folder details
+    const folder = await prisma.folder.findUnique({
+      where: { id: Number(folderId) },
+    });
+
+    if (!folder) {
+      return res.status(404).send("Folder not found");
+    }
+
+    // Fetch the updated file list
     const files = await prisma.file.findMany({
       where: { folderId: Number(folderId) },
       select: {
+        id: true,
         name: true,
         path: true,
         size: true,
@@ -80,8 +87,13 @@ async function uploadFile(req, res) {
       },
     });
 
-    // Re-render the folder page with the updated files
-    res.render("folder", { username, folderName, folderId, files });
+    
+    res.render("folder", {
+      username: req.user.username,
+      folderName: folder.name, 
+      folderId,
+      files,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error uploading file");
@@ -90,33 +102,30 @@ async function uploadFile(req, res) {
 
 async function deleteFile(req, res) {
   const fileId = parseInt(req.params.id);
-  const folderId = req.query.folderId; 
 
   try {
-      
-      const file = await prisma.file.findUnique({
-          where: { id: fileId },
-      });
+    const file = await prisma.file.findUnique({
+      where: { id: fileId },
+    });
 
-      if (!file) {
-          return res.status(404).send("File not found");
-      }
+    if (!file) {
+      return res.status(404).send("File not found");
+    }
 
-      const filePath = path.join(__dirname, "../uploads", file.path);
-      if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-      }
+    const publicId = file.path.split("/").slice(-2).join("/").split(".")[0];
 
-      await prisma.file.delete({
-          where: { id: fileId },
-      });
+    await cloudinary.uploader.destroy(publicId);
 
-      
-      res.redirect(`/${folderId}/folder`);
+    await prisma.file.delete({
+      where: { id: fileId },
+    });
+
+    res.redirect(`/${req.query.folderId}/folder`);
   } catch (err) {
-      console.error(err);
-      res.status(500).send("Error deleting file");
+    console.error(err);
+    res.status(500).send("Error deleting file");
   }
 }
+
 
 module.exports = { getFolder, uploadFile, deleteFile };
