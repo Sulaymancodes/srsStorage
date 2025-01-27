@@ -127,5 +127,25 @@ async function deleteFile(req, res) {
   }
 }
 
+async function downloadFile(req, res)  {
+  const fileId = parseInt(req.params.id);
 
-module.exports = { getFolder, uploadFile, deleteFile };
+  try {
+      // Fetch the file details from the database
+      const file = await prisma.file.findUnique({
+          where: { id: fileId },
+      });
+
+      if (!file) {
+          return res.status(404).send("File not found");
+      }
+
+      // Redirect to the Cloudinary URL
+      res.redirect(file.path);
+  } catch (err) {
+      console.error(err);
+      res.status(500).send("Error downloading file");
+  }
+};
+
+module.exports = { getFolder, uploadFile, deleteFile, downloadFile };

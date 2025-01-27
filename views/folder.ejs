@@ -249,7 +249,7 @@
                             <td class="file-size"><%= (file.size / 1024).toFixed(2) %> KB</td>
                             <td class="file-date"><%= new Date(file.uploadedAt).toLocaleString() %></td>
                             <td>
-                                <a href="/<%= file.path %>" download="<%= file.name %>">
+                                <a href="/download-file/<%= file.id %>" download="<%= file.name %>">
                                     <button class="btn-secondary">Download</button>
                                 </a>
                             </td>
