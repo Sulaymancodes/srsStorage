@@ -23,5 +23,6 @@ const upload = multer({ storage: storage });
 
 folderRouter.get("/:id/folder", folderController.getFolder);
 folderRouter.post('/uploadfile', upload.single('uploaded_file'), folderController.uploadFile);
+folderRouter.post("/delete-file/:id", folderController.deleteFile); 
 
 module.exports = folderRouter;

@@ -1,5 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const fs = require("fs");
+const path = require("path");
 
 async function getFolder(req, res) {
   if (req.isAuthenticated()) {
@@ -18,6 +20,7 @@ async function getFolder(req, res) {
       const files = await prisma.file.findMany({
         where: { folderId: Number(folderId) },
         select: {
+          id: true,
           name: true,
           path: true,
           size: true,
@@ -85,5 +88,35 @@ async function uploadFile(req, res) {
   }
 }
 
+async function deleteFile(req, res) {
+  const fileId = parseInt(req.params.id);
+  const folderId = req.query.folderId; 
 
-module.exports = { getFolder, uploadFile };
+  try {
+      
+      const file = await prisma.file.findUnique({
+          where: { id: fileId },
+      });
+
+      if (!file) {
+          return res.status(404).send("File not found");
+      }
+
+      const filePath = path.join(__dirname, "../uploads", file.path);
+      if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+      }
+
+      await prisma.file.delete({
+          where: { id: fileId },
+      });
+
+      
+      res.redirect(`/${folderId}/folder`);
+  } catch (err) {
+      console.error(err);
+      res.status(500).send("Error deleting file");
+  }
+}
+
+module.exports = { getFolder, uploadFile, deleteFile };
